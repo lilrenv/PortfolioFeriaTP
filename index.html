@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <link href="./output.css" rel="stylesheet">
+    <title>Porfolio</title>
+    <style>
+        .typing-effect {
+            border-right: 2px solid;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        body {
+            transition: filter 0.3s ease;
+        }
+
+        .card {
+            max-width: 350px;
+            /* Ajusta el ancho máximo de la tarjeta */
+            max-height: 350px;
+            cursor: pointer;
+            /* Indica que es clickeable */
+            transition: transform 0.3s ease;
+            /* Transición para la tarjeta */
+            position: relative;
+            /* Para posicionamiento relativo */
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            /* Efecto de zoom al pasar el mouse */
+        }
+
+        .image {
+            height: 180px;
+            /* Ajusta la altura de la imagen */
+        }
+
+        /* Estilos del modal */
+        .modal {
+            display: none;
+            /* Oculto por defecto */
+            position: fixed;
+            z-index: 20;
+            /* Asegura que el modal esté por encima */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Fondo semitransparente */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            /* Comienza oculto */
+            transition: opacity 0.3s ease;
+            /* Transición para el modal */
+        }
+
+        .modal.show {
+            display: flex;
+            /* Muestra el modal */
+            opacity: 1;
+            /* Opacidad total */
+        }
+
+        .tarjeta:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            /* Color del fondo del modal */
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            /* Añade sombra para el modal */
+            transform: scale(0);
+            /* Comienza en escala 0 */
+            transition: transform 0.3s ease;
+            /* Transición para el contenido del modal */
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+            /* Escala al tamaño normal al mostrar */
+        }
+
+        .modal.scale-from-card {
+            transform: scale(0);
+            /* Comienza en escala 0 al abrir desde la tarjeta */
+        }
+
+        .modal-content.scale-from-card {
+            transform: scale(1);
+            /* Se escala desde la tarjeta */
+        }
+
+        .modal.scale-to-card {
+            transform: scale(1);
+            /* Escala al tamaño normal al cerrar */
+            transition: transform 0.3s ease;
+            /* Transición para la escala */
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .custom-form-width {
+            width: 30rem;
+            /* Ajusta este valor según lo necesites */
+        }
+
+        .custom-button {
+            display: block;
+            /* Hacer que el botón sea un bloque */
+            margin: 0 auto;
+            /* Centrar horizontalmente */
+            background-color: #2563eb;
+            /* Azul Tailwind */
+            color: white;
+            border: 2px solid #1d4ed8;
+            /* Color del borde */
+            padding: 0.4rem 1rem;
+            /* Menos padding para hacerlo más pequeño */
+            border-radius: 0.375rem;
+            /* Bordes redondeados */
+            font-size: 0.875rem;
+            /* Tamaño de fuente más pequeño */
+            width: 150px;
+            /* Ajuste automático del ancho */
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .custom-button:hover {
+            background-color: #1d4ed8;
+            /* Color al pasar el mouse */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            /* Sombra en hover */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+
+
+    <nav class="bg-white border-gray-200">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <div class="w-full md:w-auto" id="navbar-default">
+                <ul class="font-medium flex flex-row p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white">
+                    <li>
+                        <a href="https://github.com/lilrenv" class="flex items-center p-2 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500" target="_blank" rel="noopener" title="Github">
+                            <svg class="w-7 h-7 transition-transform duration-200 ease-in-out transform hover:scale-125" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:silva.cruz.renato18@gmail.com" title="Gmail" class="flex items-center p-2 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">
+                            <svg class="w-7 h-7 transition-transform duration-200 ease-in-out transform hover:scale-125" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+                                <path d="M3 7l9 6l9 -6" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    
+
+    <nav class="bg-white shadow-lg fixed top-0 right-0 h-full w-60 z-10 ml-10 hidden md:block">
+        <div class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="#sobre-mi" class="text-black font-bold hover:text-blue-600">Sobre mí</a>
+                </li>
+                <li>
+                    <a href="#habilidades" class="text-black font-bold hover:text-blue-600">Habilidades</a>
+                </li>
+                <li>
+                    <a href="#proyectos" class="text-black font-bold hover:text-blue-600">Mis proyectos</a>
+                </li>
+                <li>
+                    <a href="#demos" class="text-black font-bold hover:text-blue-600">Demos</a>
+                </li>
+                <li>
+                    <a href="#juegos" class="text-black font-bold hover:text-blue-600">Juegos</a>
+                </li>
+                <li>
+                    <a href="#formulario" class="text-black font-bold hover:text-blue-600">Formulario</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+
+
+
+
+    <div class="text-center">
+        <h1 class="text-2xl md:text-3xl flex items-center justify-center font-bold mt-5 whitespace-nowrap">
+            <span class="text-black">Hola, me llamo</span>
+            <span class="text-blue-500 typing-effect ml-1"></span>
+        </h1>
+    </div>
+    
+    
+    
+
+    <div class="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto mt-10 px-4">
+        <img id="dynamic-image" src="src/Perfil1.jpg.jpeg" alt="Imagen" class="w-full h-auto object-cover md:w-1/2">
+        <div class="flex flex-col justify-center p-4 md:p-6">
+            <h2 class="text-xl md:text-2xl font-bold mb-4 text-center">Desarrollador y Programador Frontend</h2>
+            <p class="text-gray-700 text-center text-sm md:text-base">
+                En estos momentos me especializo en el frontend de las páginas web, pero mi meta es salir de cuarto medio siendo desarrollador y Programador FullStack. También me gustaría estudiar Ingeniería en software al finalizar cuarto medio.
+            </p>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+
+
+
+    <div class="text-center mb-10">
+        <section id="sobre-mi">
+            <h1 class="text-2xl font-bold mt-10 fade-up">Sobre mí</h2>
+        </section>
+    </div>
+
+
+    <div class="flex flex-wrap justify-center gap-6 px-4">
+        <div class="card bg-white shadow-lg rounded-lg overflow-hidden mt-7 fade-up" data-title="Hobbies"
+            data-description="Mis principales hobbies son jugar FIFA y hacer deporte. Tengo una gran pasión por el fútbol, ya que disfruto cada entrenamiento y cada partido que juego durante la semana. Cada sesión es una oportunidad para mejorar y aprender, lo que me motiva aún más. Además, el apoyo y aliento de mi familia hacen que la experiencia sea aún más especial. Saber que están allí para animarme y celebrar mis logros me impulsa a dar lo mejor de mí en cada encuentro. Sin duda, el fútbol es más que un simple pasatiempo; es una forma de conectar con mis seres queridos y vivir momentos inolvidables."
+            data-images='["src/Hobbies2.jpeg", "src/Hobbies3.jpeg", "src/Hobbies4.jpeg", "src/Hobbies5.jpeg", "src/Hobbies6.jpeg"]'>
+            <img src="src/Hobbies1.jpeg" alt="Imagen 1" class="image w-full object-cover">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold fade-up">Hobbies</h3>
+            </div>
+        </div>
+
+        <div class="card bg-white shadow-lg rounded-lg overflow-hidden mt-7 fade-up" data-title="Gustos musicales"
+            data-description="Escucho una variedad de géneros, pero mi cantante favorito es Eladio Carrión. Su historia me motiva, ya que, a pesar de que al principio nadie confiaba en él, trabajó con pasión y logró el éxito en la música. Admiro su capacidad para superar obstáculos y mantenerse fiel a sí mismo, lo que me inspira a seguir mis propios sueños. Su trayectoria demuestra que la perseverancia puede llevarte lejos."
+            data-image="src/Musica2.jpg">
+            <img src="src/Musica1.jpeg" alt="Imagen 2" class="image w-full object-cover">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold">Gustos musicales</h3>
+            </div>
+        </div>
+        <div class="card bg-white shadow-lg rounded-lg overflow-hidden mt-7 fade-up" data-title="Metas"
+            data-description="En este momento, la meta que me he propuesto es ingresar a una de las tres universidades que he seleccionado como futuros objetivos: la Universidad Adolfo Ibáñez, la Universidad de Santiago de Chile (USACH) y la Universidad de Chile. Para mí, representarían un gran desafío ser admitido en cualquiera de estas instituciones, ya que cada una ofrece un ambiente académico excepcional y oportunidades únicas. Mi objetivo es estudiar Ingeniería en Software en alguna de estas tres universidades, y estoy decidido a trabajar arduamente para lograrlo. Este paso es fundamental para mi desarrollo profesional y personal, y estoy entusiasmado por las posibilidades que se presentarán en el camino."
+            data-image="src/Metas2.jpg">
+            <img src="src/Metas1.jpeg" alt="Imagen 3" class="image w-full object-cover">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold">Metas</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal flex">
+        <div class="modal-content">
+            <span id="close" class="float-right cursor-pointer">&times;</span>
+            <img id="modal-image" class="w-full object-cover mb-4" alt="Imagen Modal">
+            <h3 id="modal-title" class="text-lg font-semibold"></h3>
+            <p id="modal-description" class="text-gray-700"></p>
+        </div>
+    </div>
+
+    <div class="separador mt-5"></div>
+
+    <div class="flex flex-col items-center mt-10">
+        <section id="habilidades">
+            <h2 class="text-2xl font-bold mb-4 fade-up">Habilidades</h2>
+        </section>
+
+        <!-- Contenedor para los botones -->
+        <div class="flex justify-center mb-4 scroll-element mt-5 fade-up">
+            <!-- Botón 1 -->
+            <button title="Boton" class="overflow-hidden w-12 h-12 fade-up">
+                <svg width="50px" height="50px" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 28L4 3H28L26 28L16 31L6 28Z" fill="#E44D26" />
+                    <path d="M26 5H16V29.5L24 27L26 5Z" fill="#F16529" />
+                    <path
+                        d="M9.5 17.5L8.5 8H24L23.5 11H11.5L12 14.5H23L22 24L16 26L10 24L9.5 19H12.5L13 21.5L16 22.5L19 21.5L19.5 17.5H9.5Z"
+                        fill="white" />
+                </svg>
+            </button>
+            <div class="w-6"></div>
+            <!-- Botón 2 -->
+            <button title="Boton" class="overflow-hidden w-12 h-12 ">
+                <svg width="50px" height="50px" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 28L4 3H28L26 28L16 31L6 28Z" fill="#1172B8" />
+                    <path d="M26 5H16V29.5L24 27L26 5Z" fill="#33AADD" />
+                    <path
+                        d="M19.5 17.5H9.5L9 14L17 11.5H9L8.5 8.5H24L23.5 12L17 14.5H23L22 24L16 26L10 24L9.5 19H12.5L13 21.5L16 22.5L19 21.5L19.5 17.5Z"
+                        fill="white" />
+                </svg>
+            </button>
+            <div class="w-6"></div>
+            <!-- Botón 3 -->
+            <button title="Boton" class=" overflow-hidden w-12 h-12">
+                <svg width="45px" height="45px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid">
+                    <g>
+                        <path d="M0,0 L256,0 L256,256 L0,256 L0,0 Z" fill="#F7DF1E">
+
+                        </path>
+                        <path
+                            d="M67.311746,213.932292 L86.902654,202.076241 C90.6821079,208.777346 94.1202286,214.447137 102.367086,214.447137 C110.272203,214.447137 115.256076,211.354819 115.256076,199.326883 L115.256076,117.528787 L139.313575,117.528787 L139.313575,199.666997 C139.313575,224.58433 124.707759,235.925943 103.3984,235.925943 C84.1532952,235.925943 72.9819429,225.958603 67.3113397,213.93026"
+                            fill="#000000">
+
+                        </path>
+                        <path
+                            d="M152.380952,211.354413 L171.969422,200.0128 C177.125994,208.433981 183.827911,214.619835 195.684368,214.619835 C205.652521,214.619835 212.009041,209.635962 212.009041,202.762159 C212.009041,194.513676 205.479416,191.592025 194.481168,186.78207 L188.468419,184.202565 C171.111213,176.81473 159.597308,167.53534 159.597308,147.944838 C159.597308,129.901308 173.344508,116.153295 194.825752,116.153295 C210.119924,116.153295 221.117765,121.48094 229.021663,135.400432 L210.29059,147.428775 C206.166146,140.040127 201.699556,137.119289 194.826159,137.119289 C187.78047,137.119289 183.312254,141.587098 183.312254,147.428775 C183.312254,154.646349 187.78047,157.568406 198.089956,162.036622 L204.103924,164.614095 C224.553448,173.378641 236.067352,182.313448 236.067352,202.418387 C236.067352,224.071924 219.055137,235.927975 196.200432,235.927975 C173.860978,235.927975 159.425829,225.274311 152.381359,211.354413"
+                            fill="#000000">
+
+                        </path>
+                    </g>
+                </svg>
+            </button>
+            <div class="w-6"></div>
+            <!-- Botón 4 -->
+            <button title="Boton" class="overflow-hidden w-12 h-12">
+                <svg width="50px" height="50px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <title>file_type_tailwind</title>
+                    <path
+                        d="M9,13.7q1.4-5.6,7-5.6c5.6,0,6.3,4.2,9.1,4.9q2.8.7,4.9-2.1-1.4,5.6-7,5.6c-5.6,0-6.3-4.2-9.1-4.9Q11.1,10.9,9,13.7ZM2,22.1q1.4-5.6,7-5.6c5.6,0,6.3,4.2,9.1,4.9q2.8.7,4.9-2.1-1.4,5.6-7,5.6c-5.6,0-6.3-4.2-9.1-4.9Q4.1,19.3,2,22.1Z"
+                        style="fill:#44a8b3" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="w-full max-w-sm text-center mt-10">
+        <section id="proyectos">
+            <h1 class="text-2xl font-bold mb-6 scroll-element fade-up">Mis Proyectos</h1>
+        </section>
+
+        <div class="flex flex-wrap justify-center gap-6 px-4">
+
+            <div class="tarjeta scroll-element bg-white shadow-lg rounded-lg overflow-hidden w-80 transition-transform transform hover:scale-105 cursor-pointer fade-up"
+                onclick="window.location='https://lilrenv.github.io/Tp-sneakercougar/'">
+                <img src="src/proyecto-2.png" alt="Imagen 2" class="image w-full object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">SnakerCougar</h3>
+                </div>
+            </div>
+
+            <div class="tarjeta scroll-element bg-white shadow-lg rounded-lg overflow-hidden w-80 transition-transform transform hover:scale-105 cursor-pointer fade-up"
+                onclick="window.location='https://lilrenv.github.io/Bajondelmonito/'">
+                <img src="src/proyecto-3.png" alt="Imagen 3" class="image w-full object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Bajon del monito</h3>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="w-full max-w-sm text-center mt-10">
+        <section id="demos">
+            <h1 class="text-2xl font-bold mb-6 scroll-element fade-up">Demos</h1>
+        </section>
+
+        <div class="flex flex-wrap justify-center gap-6 px-4">
+
+            <div class="tarjeta scroll-element bg-white shadow-lg rounded-lg overflow-hidden w-80 transition-transform transform hover:scale-105 cursor-pointer fade-up"
+                onclick="window.location='https://lilrenv.github.io/Plushstar/'">
+                <img src="src/demo-2.png" alt="Imagen 2" class="image w-full object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Plushstar</h3>
+                </div>
+            </div>
+
+            <div class="tarjeta scroll-element bg-white shadow-lg rounded-lg overflow-hidden w-80 transition-transform transform hover:scale-105 cursor-pointer fade-up"
+                onclick="window.location='https://lilrenv.github.io/Modernize/'">
+                <img src="src/demo-1.png" alt="Imagen 3" class="image w-full object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Modernize</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full max-w-sm text-center mt-10">
+        <section id="juegos">
+            <h1 class="text-2xl font-bold mb-6 scroll-element fade-up">Juegos</h1>
+        </section>
+
+        <div class="flex flex-wrap justify-center gap-6 px-4">
+
+            <div class="tarjeta scroll-element bg-white shadow-lg rounded-lg overflow-hidden w-80 transition-transform transform hover:scale-105 cursor-pointer fade-up"
+                onclick="window.location='https://lilrenv.github.io/Juego-gato/'">
+                <img src="src/juego-1.png" alt="Imagen 2" class="image w-full object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Juego gato 2.0</h3>
+                </div>
+            </div>
+
+            <div class="tarjeta scroll-element bg-white shadow-lg rounded-lg overflow-hidden w-80 transition-transform transform hover:scale-105 cursor-pointer fade-up"
+                onclick="window.location='https://lilrenv.github.io/Rene-pacman/'">
+                <img src="src/juego-2.png" alt="Imagen 3" class="image w-full object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold">Rene-pacman</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-sky-100 to-indigo-100 fade-up"
+        id="formulario">
+        <div
+            class="form-content bg-white/95 backdrop-blur-sm rounded-xl shadow-lg custom-form-width p-12 border border-white/20 mt-10 fade-up">
+            <!-- Encabezado con decoración -->
+            <div class="text-center mb-6 relative fade-up">
+                <div class="absolute inset-x-0 -top-4 h-1 bg-gradient-to-r from-sky-400 to-indigo-400 rounded-full">
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 relative mt-5">
+                    Enviar su formulario
+                </h2>
+                <div class="mt-2 h-0.5 w-16 mx-auto bg-gradient-to-r from-sky-300 to-indigo-300"></div>
+            </div>
+
+            <!-- Formulario -->
+            <form class="space-y-5" action="https://formsubmit.co/formferia@gmail.com" method="POST">
+                <!-- Campo Nombre -->
+                <div class="space-y-1 group px-4 fade-up">
+                    <label for="name"
+                        class="block text-sm font-medium text-gray-700 group-hover:text-sky-600 transition-colors mb-2">
+                        Nombre
+                    </label>
+                    <input type="text" name="name" id="name"
+                        class="w-full px-4 py-3 rounded-md border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-sky-400 focus:border-sky-400 text-sm transition-all shadow-sm hover:border-sky-300"
+                        placeholder="Ingrese su nombre">
+                </div>
+
+                <!-- Campo Email -->
+                <div class="space-y-1 group px-4 fade-up">
+                    <label for="email"
+                        class="block text-sm font-medium text-gray-700 group-hover:text-sky-600 transition-colors mb-2">
+                        Correo electrónico
+                    </label>
+                    <input type="email" name="email" id="email"
+                        class="w-full px-4 py-3 rounded-md border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-sky-400 focus:border-sky-400 text-sm transition-all shadow-sm hover:border-sky-300"
+                        placeholder="ejemplo@correo.com">
+                </div>
+
+                <!-- Campo Asunto -->
+                <div class="space-y-1 group px-4 fade-up">
+                    <label for="subject"
+                        class="block text-sm font-medium text-gray-700 group-hover:text-sky-600 transition-colors mb-2">
+                        Asunto
+                    </label>
+                    <input type="text" name="subject" id="subject"
+                        class="w-full px-4 py-3 rounded-md border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-sky-400 focus:border-sky-400 text-sm transition-all shadow-sm hover:border-sky-300"
+                        placeholder="Asunto de su mensaje">
+                </div>
+
+                <!-- Campo Comentarios -->
+                <div class="space-y-1 group px-4 fade-up">
+                    <label for="coments"
+                        class="block text-sm font-medium text-gray-700 group-hover:text-sky-600 transition-colors mb-2">
+                        Comentarios
+                    </label>
+                    <textarea name="coments" id="coments" rows="4"
+                        class="w-full px-4 py-3 rounded-md border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-sky-400 focus:border-sky-400 text-sm transition-all shadow-sm hover:border-sky-300 resize-none"
+                        placeholder="Escriba su mensaje aquí..."></textarea>
+                </div>
+
+                <!-- Botón Enviar -->
+                <button type="submit" class="w-full mt-4 custom-button">
+                    <span class="relative z-10">Enviar</span>
+                </button>
+
+
+
+        </div>
+
+
+
+        <script>
+            const nameText = "Renato Silva";
+            const typingElement = document.querySelector('.typing-effect');
+            let index = 0;
+            let isDeleting = false;
+            const typingSpeed = 150;
+            const deletingSpeed = 100;
+
+            function type() {
+                if (isDeleting) {
+                    typingElement.textContent = nameText.substring(0, index--);
+                    if (index < 0) {
+                        isDeleting = false;
+                        setTimeout(type, 500); // Pausa antes de empezar a escribir
+                    } else {
+                        setTimeout(type, deletingSpeed);
+                    }
+                } else {
+                    typingElement.textContent = nameText.substring(0, index++);
+                    if (index > nameText.length) {
+                        isDeleting = true;
+                        setTimeout(type, 1000); // Pausa al finalizar la escritura
+                    } else {
+                        setTimeout(type, typingSpeed);
+                    }
+                }
+            }
+
+            type();
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const modal = document.getElementById('modal');
+                const cards = document.querySelectorAll('.card');
+                const closeModal = document.getElementById('close');
+                const modalImage = document.getElementById('modal-image');
+                const modalTitle = document.getElementById('modal-title');
+                const modalDescription = document.getElementById('modal-description');
+
+                // Variable para el intervalo de la imagen
+                let imageIndex = 0;
+                let imageInterval;
+
+                cards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const title = card.getAttribute('data-title');
+                        const description = card.getAttribute('data-description');
+                        const images = JSON.parse(card.getAttribute('data-images') || '[]');
+
+                        // Si hay imágenes, inicia el intervalo
+                        if (images.length > 0) {
+                            modalImage.src = images[0]; // Establecer la primera imagen
+                            imageIndex = 0;
+
+                            // Cambiar la imagen cada 2 segundos
+                            imageInterval = setInterval(() => {
+                                imageIndex = (imageIndex + 1) % images.length; // Aumenta el índice y reinicia si es necesario
+                                modalImage.src = images[imageIndex]; // Cambiar imagen
+                            }, 2000);
+                        } else {
+                            modalImage.src = card.getAttribute('data-image'); // Para otras tarjetas, usar la imagen única
+                            clearInterval(imageInterval); // Detener el intervalo si no hay imágenes múltiples
+                        }
+
+                        // Actualizar el contenido del modal
+                        modalTitle.textContent = title;
+                        modalDescription.textContent = description;
+
+                        // Mostrar modal
+                        modal.classList.add('show');
+                        modal.style.display = 'flex';
+                    });
+                });
+
+                closeModal.addEventListener('click', () => {
+                    modal.classList.remove('show'); // Oculta el modal
+                    modal.style.display = 'none'; // Oculta el modal después de la animación
+                    clearInterval(imageInterval); // Detener el intervalo al cerrar el modal
+                });
+
+                // Cerrar el modal si se hace clic fuera del contenido
+                window.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.classList.remove('show'); // Oculta el modal
+                        modal.style.display = 'none'; // Oculta el modal después de la animación
+                        clearInterval(imageInterval); // Detener el intervalo al cerrar el modal
+                    }
+                });
+            });
+
+            // Función para verificar si un elemento está en la vista
+            function isElementInView(element) {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                // Elemento está en vista cuando su parte superior está por debajo
+                // de la parte superior de la ventana y su parte inferior está por
+                // encima de la parte inferior de la ventana
+                return rect.top <= windowHeight && rect.bottom >= 0;
+            }
+
+            // Función para verificar si un elemento está completamente fuera de la vista
+            function isElementCompletelyOutOfView(element) {
+                const rect = element.getBoundingClientRect();
+                return rect.bottom < 0 || rect.top > window.innerHeight;
+            }
+
+            // Función para manejar las animaciones
+            function handleScrollAnimations() {
+                const elements = document.querySelectorAll('.fade-up');
+
+                elements.forEach(element => {
+                    if (isElementInView(element)) {
+                        element.classList.add('visible');
+                    } else if (isElementCompletelyOutOfView(element)) {
+                        // Solo removemos la clase si el elemento está completamente fuera de vista
+                        element.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Agregar event listeners
+            window.addEventListener('scroll', handleScrollAnimations);
+            window.addEventListener('resize', handleScrollAnimations);
+
+            // Llamada inicial para elementos que ya están en vista
+            handleScrollAnimations();
+
+
+            document.querySelectorAll('.scroll-link').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+
+        </script>
+</body>
+
+</html>
